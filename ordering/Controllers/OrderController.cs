@@ -1,3 +1,4 @@
+using Dapr;
 using GloboTicket.Ordering.Model;
 using GloboTicket.Ordering.Services;
 using Microsoft.ApplicationInsights;
@@ -21,6 +22,7 @@ public class OrderController : ControllerBase
         this.telemetryCient = telemetryClient;
     }
 
+    [Topic("pubsub", "orders")]
     [HttpPost("", Name = "SubmitOrder")]
     public IActionResult Submit(OrderForCreation order)
     {

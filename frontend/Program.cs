@@ -10,11 +10,12 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddDaprClient();
 
+
 builder.Services.AddSingleton<IEventCatalogService>(sc => 
     new EventCatalogService(DaprClient.CreateInvokeHttpClient("catalog")));
 
 //TODO: replace ordersubmission httpclient with dapr stuff
-builder.Services.AddTransient<IOrderSubmissionService, HttpOrderSubmissionService>();
+builder.Services.AddTransient<IOrderSubmissionService, PubSubOrderSubmissionService>();
 
 
 builder.Services.AddSingleton<IShoppingBasketService, InMemoryShoppingBasketService>();
@@ -35,10 +36,13 @@ if (!app.Environment.IsDevelopment())
 // Turning this off to simplify the running in Kubernetes demo
 // app.UseHttpsRedirection();
 app.UseStaticFiles();
+app.UseCloudEvents();
 app.UseRouting();
 app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=EventCatalog}/{action=Index}/{id?}");
+
+app.MapSubscribeHandler();
 
 app.Run();

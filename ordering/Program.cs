@@ -21,8 +21,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseCloudEvents(); // DAPR stuff
 app.UseRouting();
 app.UseAuthorization();
 app.MapControllers();
+app.MapSubscribeHandler(); // DAPR stuff
 
 app.Run();
