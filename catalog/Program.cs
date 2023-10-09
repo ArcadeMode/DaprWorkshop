@@ -1,3 +1,5 @@
+using Dapr.Client;
+using Dapr.Extensions.Configuration;
 using GloboTicket.Catalog;
 using GloboTicket.Catalog.Repositories;
 
@@ -12,6 +14,15 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddApplicationInsightsTelemetry();
+builder.WebHost.ConfigureAppConfiguration(config =>
+{
+    var daprClient = new DaprClientBuilder().Build();
+    var secretDescriptors = new List<DaprSecretDescriptor>
+    {
+        new DaprSecretDescriptor("catalogconnectionstring")
+    };
+    config.AddDaprSecretStore("secretstore", secretDescriptors, daprClient);
+});
 builder.Services.Configure<CatalogOptions>(builder.Configuration);
 
 var app = builder.Build();
