@@ -12,7 +12,6 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddApplicationInsightsTelemetry();
-
 builder.Services.Configure<CatalogOptions>(builder.Configuration);
 
 var app = builder.Build();
@@ -25,6 +24,13 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseAuthorization();
+
+app.MapPost("scheduled", (ILoggerFactory factory, IEventRepository repository) => 
+{
+    factory.CreateLogger("GloboTicket.Catalog.Scheduler")
+        .LogInformation("Scheduled endpoint called");
+    repository.UpdateSpecialOffer();
+});
 
 app.MapControllers();
 
