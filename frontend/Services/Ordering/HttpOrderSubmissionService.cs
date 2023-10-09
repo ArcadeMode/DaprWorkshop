@@ -1,4 +1,5 @@
-﻿using GloboTicket.Frontend.Models.Api;
+﻿using Dapr.Client;
+using GloboTicket.Frontend.Models.Api;
 using GloboTicket.Frontend.Models.View;
 using GloboTicket.Frontend.Services.ShoppingBasket;
 
@@ -7,9 +8,9 @@ namespace GloboTicket.Frontend.Services.Ordering;
 public class HttpOrderSubmissionService : IOrderSubmissionService
 {
     private readonly IShoppingBasketService shoppingBasketService;
-    private readonly HttpClient orderingClient;
+    private readonly DaprClient orderingClient;
 
-    public HttpOrderSubmissionService(IShoppingBasketService shoppingBasketService, HttpClient orderingClient)
+    public HttpOrderSubmissionService(IShoppingBasketService shoppingBasketService, DaprClient orderingClient)
     {
         this.shoppingBasketService = shoppingBasketService;
         this.orderingClient = orderingClient;
@@ -33,10 +34,8 @@ public class HttpOrderSubmissionService : IOrderSubmissionService
             CreditCardExpiryDate = checkoutViewModel.CreditCardDate
         };
         // make a synchronous call to the ordering microservice
-        var response = await orderingClient.PostAsJsonAsync("order", order);
-        // can be a validation error - haven't implemented validation yet
-        var s = await response.Content.ReadAsStringAsync();
-        response.EnsureSuccessStatusCode();
+        await orderingClient.InvokeMethodAsync<OrderForCreation>("ordering", "order", order);  
+
         return order.OrderId;
     }
 }
