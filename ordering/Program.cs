@@ -11,6 +11,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddTransient<EmailSender>();
 builder.Services.AddApplicationInsightsTelemetry();
+builder.Services.AddDaprClient(); // DAPR stuff
 
 var app = builder.Build();
 
