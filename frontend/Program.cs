@@ -18,7 +18,7 @@ builder.Services.AddSingleton<IEventCatalogService>(sc =>
 builder.Services.AddTransient<IOrderSubmissionService, PubSubOrderSubmissionService>();
 
 
-builder.Services.AddSingleton<IShoppingBasketService, InMemoryShoppingBasketService>();
+builder.Services.AddSingleton<IShoppingBasketService, DaprClientStateStoreShoppingBasket>();
 
 builder.Services.AddSingleton<Settings>();
 builder.Services.AddApplicationInsightsTelemetry();

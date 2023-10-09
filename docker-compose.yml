@@ -87,6 +87,8 @@ services:
       - "6379"
     networks:
       - globoticket
+    volumes:
+      - "./data:/data"
       
   zipkin:
     container_name: "zipkin"
